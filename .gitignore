@@ -1,0 +1,57 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build
+dist
+dist-ssr
+build
+*.local
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# QuantStats cloned repo (Apache 2.0 license - separate project)
+quantstats/
+quantstats-repo/
+
+# Projects folder (validations, etc.)
+projects/
+
+# Temp files
+*.tmp
+*.temp
+
+.vercel
+
+# Claude AI context
+.claude/
+CLAUDE.md
+
+# Internal directories
+temp/
+cloudflare-workers/
+docs/
+scripts/

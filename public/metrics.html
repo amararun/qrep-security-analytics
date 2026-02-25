@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QREP Metrics Reference</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #000;
+      background: #fff;
+      padding: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #0d9488;
+    }
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      color: #0d9488;
+    }
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    p {
+      margin-bottom: 12px;
+    }
+    ul {
+      margin-left: 24px;
+      margin-bottom: 12px;
+    }
+    li {
+      margin-bottom: 4px;
+    }
+    code {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 14px;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    pre {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 14px;
+      background: #f1f5f9;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    strong {
+      font-weight: 600;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 24px 0;
+    }
+    em {
+      font-style: italic;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+<h1>QREP Metrics Reference</h1>
+
+<p>Explanation of how the metrics are calculated in QuantStats.</p>
+
+<hr>
+
+<h2>Performance Ratios</h2>
+
+<p>These ratios measure risk-adjusted returns - how much return you're getting for the risk you're taking.</p>
+
+<hr>
+
+<h3>Sharpe Ratio</h3>
+
+<p><strong>What it is:</strong> Measures excess return per unit of total risk (volatility). Named after William Sharpe (1966).</p>
+
+<strong>Where it's useful:</strong>
+<ul>
+<li>Comparing investments with different risk levels</li>
+<li>Evaluating portfolio managers</li>
+<li>Most widely used risk-adjusted performance metric</li>
+</ul>
+
+<strong>How it's computed:</strong>
+<pre>Sharpe = (Portfolio Return - Risk-Free Rate) / Portfolio Volatility
+
+Where:
+- Portfolio Return = Annualized return (CAGR)
+- Risk-Free Rate = Treasury rate (default: 0%)
+- Volatility = Standard deviation of returns (annualized)</pre>
+
+<strong>Interpretation:</strong>
+<ul>
+<li>Sharpe > 1.0 = Good</li>
+<li>Sharpe > 2.0 = Very good</li>
+<li>Sharpe > 3.0 = Excellent</li>
+<li>Sharpe < 0 = You're losing money vs risk-free rate</li>
+</ul>
+
+<p><strong>Limitation:</strong> Treats all volatility equally (up and down movements), but investors typically only care about downside risk.</p>
+
+<hr>
+
+<h3>Sortino Ratio</h3>
+
+<p><strong>What it is:</strong> Similar to Sharpe, but only penalizes downside volatility. Named after Frank Sortino.</p>
+
+<strong>Where it's useful:</strong>
+<ul>
+<li>When you care about downside risk specifically</li>
+<li>Evaluating strategies that have asymmetric return distributions</li>
+<li>Better for comparing strategies with different return patterns</li>
+</ul>
+
+<strong>How it's computed:</strong>
+<pre>Sortino = (Portfolio Return - Risk-Free Rate) / Downside Deviation
+
+Where:
+- Downside Deviation = Standard deviation of ONLY negative returns</pre>
+
+<strong>Interpretation:</strong>
+<ul>
+<li>Higher is better (same scale as Sharpe, but typically higher values)</li>
+<li>Sortino > Sharpe means positive skew (more upside volatility than downside)</li>
+<li>Sortino < Sharpe means negative skew (more downside volatility)</li>
+</ul>
+
+<p><strong>Advantage over Sharpe:</strong> Doesn't penalize you for upside volatility (big gains).</p>
+
+<hr>
+
+<h3>Calmar Ratio</h3>
+
+<p><strong>What it is:</strong> Measures return relative to maximum drawdown (worst peak-to-trough decline). Named after the California Managed Accounts Report.</p>
+
+<strong>Where it's useful:</strong>
+<ul>
+<li>Evaluating how much you risk losing to achieve returns</li>
+<li>Important for strategies where drawdowns are psychologically difficult</li>
+<li>Popular in hedge fund evaluation</li>
+</ul>
+
+<strong>How it's computed:</strong>
+<pre>Calmar = CAGR / |Max Drawdown|
+
+Example:
+- CAGR = 15%
+- Max Drawdown = -30%
+- Calmar = 15% / 30% = 0.50</pre>
+
+<strong>Interpretation:</strong>
+<ul>
+<li>Calmar > 1.0 = Annual return exceeds max drawdown</li>
+<li>Calmar > 3.0 = Excellent (rare)</li>
+<li>Calmar < 0.5 = Poor risk/reward</li>
+</ul>
+
+<p><strong>Note:</strong> Very sensitive to the time period - one bad year can drastically change it.</p>
+
+<hr>
+
+<h3>Omega Ratio</h3>
+
+<p><strong>What it is:</strong> Measures the probability-weighted ratio of gains vs losses relative to a threshold. Introduced by Keating and Shadwick (2002).</p>
+
+<strong>Where it's useful:</strong>
+<ul>
+<li>Captures entire return distribution (not just mean/variance)</li>
+<li>Better for non-normal return distributions</li>
+<li>More comprehensive than Sharpe for complex strategies</li>
+</ul>
+
+<strong>How it's computed:</strong>
+<pre>Omega = Sum of (Returns above threshold) / Sum of (Returns below threshold)
+
+In QPulse (threshold = 0%):
+- Numerator: Sum of all positive daily returns
+- Denominator: Sum of absolute values of all negative daily returns
+
+Example with 5 days:
+Returns: +2%, -1%, +3%, -0.5%, +1%
+Gains = 2 + 3 + 1 = 6%
+Losses = |-1| + |-0.5| = 1.5%
+Omega = 6 / 1.5 = 4.0</pre>
+
+<strong>Interpretation:</strong>
+<ul>
+<li>Omega > 1.0 = Gains exceed losses</li>
+<li>Omega = 1.0 = Break-even</li>
+<li>Omega < 1.0 = Losses exceed gains</li>
+</ul>
+
+<p><strong>Note:</strong> The threshold is configurable in QuantStats (required_return parameter) but defaults to 0%.</p>
+
+<hr>
+
+<h3>Payoff Ratio</h3>
+
+<p><strong>What it is:</strong> Measures average win size vs average loss size. Also called "Profit/Loss Ratio" or "Average Win/Loss Ratio".</p>
+
+<strong>Where it's useful:</strong>
+<ul>
+<li>Evaluating trading strategy quality</li>
+<li>Understanding if wins are typically bigger than losses</li>
+<li>Combined with Win Rate to assess strategy viability</li>
+</ul>
+
+<strong>How it's computed:</strong>
+<pre>Payoff Ratio = Average Win / |Average Loss|
+
+Where:
+- Win = Any day with return > 0% (strictly positive)
+- Loss = Any day with return < 0% (strictly negative)
+- Zero returns are excluded
+
+Example:
+- Winning days: +1.5%, +2.0%, +0.8% → Average Win = 1.43%
+- Losing days: -0.5%, -1.2%, -0.8% → Average Loss = -0.83%
+- Payoff Ratio = 1.43 / 0.83 = 1.72</pre>
+
+<strong>Interpretation:</strong>
+<ul>
+<li>Payoff > 1.0 = Wins are bigger than losses on average</li>
+<li>Payoff = 1.0 = Wins and losses are equal size</li>
+<li>Payoff < 1.0 = Losses are bigger than wins</li>
+</ul>
+
+<strong>Relationship with Win Rate:</strong>
+<p>A strategy can be profitable with low Payoff if Win Rate is high, or with low Win Rate if Payoff is high.</p>
+<pre>Break-even: Payoff = (1 - Win Rate) / Win Rate</pre>
+
+<hr>
+
+<h3>Profit Factor</h3>
+
+<p><strong>What it is:</strong> Total gross profits divided by total gross losses. Simple measure of profitability.</p>
+
+<strong>Where it's useful:</strong>
+<ul>
+<li>Quick profitability assessment</li>
+<li>Trading system evaluation</li>
+<li>Easy to understand and communicate</li>
+</ul>
+
+<strong>How it's computed:</strong>
+<pre>Profit Factor = Sum of all Positive Returns / |Sum of all Negative Returns|
+
+Example:
+- Total gains: +10% across all winning days
+- Total losses: -6% across all losing days
+- Profit Factor = 10 / 6 = 1.67</pre>
+
+<strong>Interpretation:</strong>
+<ul>
+<li>Profit Factor > 1.0 = Profitable (making money)</li>
+<li>Profit Factor = 1.0 = Break-even</li>
+<li>Profit Factor < 1.0 = Losing money</li>
+<li>Profit Factor > 2.0 = Very good</li>
+<li>Profit Factor > 3.0 = Excellent (rare in live trading)</li>
+</ul>
+
+<p><strong>Difference from Payoff Ratio:</strong> Profit Factor uses SUM of returns (total profit/loss), Payoff uses AVERAGE (mean win/loss size).</p>
+
+<hr>
+
+<h2>Returns & Performance</h2>
+
+<h3>CAGR (Compound Annual Growth Rate)</h3>
+
+<p><strong>What it is:</strong> The annualized rate of return assuming profits are reinvested.</p>
+
+<strong>How it's computed:</strong>
+<pre>CAGR = (Ending Value / Starting Value)^(1/years) - 1</pre>
+
+<hr>
+
+<h3>Best Year</h3>
+
+<p>The highest annual return achieved in any single calendar year during the analysis period.</p>
+
+<strong>How it's calculated:</strong>
+<ul><li>QuantStats groups daily returns by calendar year</li>
+<li>Compounds the daily returns within each year to get annual return</li>
+<li>Returns the maximum (best) annual return across all years</li>
+</ul>
+<strong>Example:</strong>
+<p>If analyzing 2020-2024 data with yearly returns:</p>
+<ul><li>2020: +15%</li>
+<li>2021: +28%</li>
+<li>2022: -18%</li>
+<li>2023: +12%</li>
+<li>2024: +8%</li>
+</ul>
+<p>Best Year = <strong>28%</strong> (2021 had the highest annual return)</p>
+
+<strong>Source:</strong> <code>quantstats.stats.best(returns, aggregate='A')</code>
+
+<hr>
+
+<h3>Worst Year</h3>
+
+<p>The lowest (most negative) annual return achieved in any single calendar year during the analysis period.</p>
+
+<strong>How it's calculated:</strong>
+<ul><li>QuantStats groups daily returns by calendar year</li>
+<li>Compounds the daily returns within each year to get annual return</li>
+<li>Returns the minimum (worst) annual return across all years</li>
+</ul>
+<strong>Example:</strong>
+<p>Using the same 2020-2024 data:</p>
+<ul><li>2020: +15%</li>
+<li>2021: +28%</li>
+<li>2022: -18%</li>
+<li>2023: +12%</li>
+<li>2024: +8%</li>
+</ul>
+<p>Worst Year = <strong>-18%</strong> (2022 had the lowest annual return)</p>
+
+<strong>Source:</strong> <code>quantstats.stats.worst(returns, aggregate='A')</code>
+
+<hr>
+
+<h2>Risk Metrics</h2>
+
+<h3>Max Drawdown</h3>
+
+<p><strong>What it is:</strong> The largest peak-to-trough decline in portfolio value.</p>
+
+<strong>How it's computed:</strong>
+<pre>Max Drawdown = (Trough Value - Peak Value) / Peak Value
+
+Example:
+- Portfolio reaches $100,000 (peak)
+- Falls to $70,000 (trough)
+- Max Drawdown = (70,000 - 100,000) / 100,000 = -30%</pre>
+
+<hr>
+
+<h3>Volatility (Annualized)</h3>
+
+<p><strong>What it is:</strong> Standard deviation of returns, annualized.</p>
+
+<strong>How it's computed:</strong>
+<pre>Volatility = Daily Std Dev * sqrt(252)
+
+Where 252 = trading days per year</pre>
+
+<hr>
+
+<h2>Pending</h2>
+
+<ul>
+<li>Cumulative Return</li>
+<li>Alpha & Beta</li>
+<li>Win Rate metrics</li>
+<li>VaR and CVaR</li>
+<li>Recovery Factor</li>
+</ul>
+
+</body>
+</html>

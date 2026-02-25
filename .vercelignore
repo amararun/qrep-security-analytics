@@ -1,0 +1,7 @@
+node_modules
+quantstats/
+quantstats-repo/
+projects/
+.git
+*.tmp
+*.temp
